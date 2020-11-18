@@ -1,7 +1,6 @@
 # R-GroupChat
 Second Custom Order Project   
 
-2. Village Chat Plugin   
-마을 채팅 플러그인
-
+## Village Chat Plugin   
 의뢰인 : ___Moon
+제작기간 : 2020.10.30 ~ 2020.11.19 
