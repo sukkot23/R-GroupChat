@@ -1,0 +1,5 @@
+# %p% = 플레이어
+# %v% = 해당 플레이어의 마을
+
+defaultVillage : '델루나'
+default: '&7[&a%v%&7] &r<%p%>'
