@@ -5,9 +5,7 @@ import com.flora.chat.gui.InventoryVillageOperatorGui;
 import com.flora.chat.gui.InventoryVillageHeaderGui;
 import com.flora.chat.gui.InventoryVillagerGui;
 import org.apache.commons.lang.StringUtils;
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -196,14 +194,19 @@ public class CommandGroupVillage implements CommandExecutor {
                     configuration.set("village", "");
                     configuration.set("header", false);
                     Reference.saveDataFile(configuration, Reference.getDataFile((String) b));
+
+                    OfflinePlayer p = Bukkit.getOfflinePlayer(UUID.fromString((String) b));
+
+                    if (p.isOnline()) {
+                        Reference.updatePlayerData((String) b);
+                        Reference.updatePlayerChannel(p.getPlayer(), 0);
+                    }
                 }
             }
 
             if (file.delete()) {
                 Reference.LOG.info(Reference.SUCCESS + " " + villageName + "§e 마을이 정상적으로 삭제되었습니다");
                 sender.sendMessage(Reference.SUCCESS + " " + villageName + "§e 마을이 정상적으로 삭제되었습니다");
-
-                Reference.updateAllPlayerData();
             } else {
                 sender.sendMessage(Reference.FAIL + "§c 마을을 삭제 할 수 없습니다");
             }
@@ -364,7 +367,8 @@ public class CommandGroupVillage implements CommandExecutor {
                         p.sendMessage(Reference.WARING + " " + player.getName() + "이(가) 마을에 합류하였습니다!");
                 }
 
-                Reference.updateAllPlayerData();
+                Reference.updatePlayerData(uuid);
+
                 player.sendMessage(Reference.SUCCESS + " 축하드립니다!! " + inviteVillage + " 마을에 합류하였습니다!");
             }
         } else {

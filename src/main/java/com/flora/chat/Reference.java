@@ -30,11 +30,13 @@ public class Reference
     /* Player, <Village, Header> */
     public static Map<Player, Object[]> playerList = new HashMap<>();
     /* UUID, switch */
-    public static Map<String, Integer> playerChatChannel = new HashMap<>();
+    public static Map<Player, Integer> playerChatChannel = new HashMap<>();
     /* UUID, Village */
     public static Map<String, String> playerInviteList = new HashMap<>();
     /* Chat Color */
     public static Map<String, String> villageChatColor = new HashMap<>();
+    /* Op Chat View Mod */
+    public static Map<Player, Boolean> OpChatViewMod = new HashMap<>();
 
 
     public static void getVillageChatColor()
@@ -160,27 +162,24 @@ public class Reference
 
 
     /* Has Map - Chat */
-    public static void updatePlayerChannel(String uuid, int channel)
+    public static void updatePlayerChannel(Player player, int channel)
     {
-        playerChatChannel.put(uuid, channel);
+        playerChatChannel.put(player, channel);
     }
 
-    public static void removePlayerChannel(String uuid)
+    public static void removePlayerChannel(Player player)
     {
-        playerChatChannel.remove(uuid);
+        playerChatChannel.remove(player);
     }
 
-
-
-    public static void updateAllPlayerData()
-    {
-        for (Player p : Bukkit.getOnlinePlayers())
-        {
-            updatePlayerData(p.getUniqueId().toString());
-            updatePlayerChannel(p.getUniqueId().toString(), 0);
-        }
-    }
-
+//    public static void updateAllPlayerData()
+//    {
+//        for (Player p : Bukkit.getOnlinePlayers())
+//        {
+//            updatePlayerData(p.getUniqueId().toString());
+//            updatePlayerChannel(p.getUniqueId().toString(), 0);
+//        }
+//    }
 
     public static boolean isHeader(String uuid)
     {

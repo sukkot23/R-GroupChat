@@ -1,6 +1,7 @@
 package com.flora.chat.event;
 
 import com.flora.chat.Reference;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -23,7 +24,12 @@ public class EventDataManager implements Listener
             onCreateNewData(player, uuid);
 
         Reference.updatePlayerData(player);
-        Reference.updatePlayerChannel(uuid, 0);
+        Reference.updatePlayerChannel(player, 0);
+
+        if (player.isOp()) {
+            FileConfiguration config = Reference.getDataConfig(uuid);
+            Reference.OpChatViewMod.put(player, config.getBoolean("viewMod"));
+        }
     }
 
     @EventHandler
@@ -33,7 +39,10 @@ public class EventDataManager implements Listener
         String uuid = player.getUniqueId().toString();
 
         Reference.removePlayerData(player);
-        Reference.removePlayerChannel(uuid);
+        Reference.removePlayerChannel(player);
+
+        if (player.isOp())
+            Reference.OpChatViewMod.remove(player);
     }
 
 
@@ -41,7 +50,16 @@ public class EventDataManager implements Listener
     @EventHandler
     private void onServerReloadEvent(ServerLoadEvent event)
     {
-        Reference.updateAllPlayerData();
+        for (Player p : Bukkit.getOnlinePlayers())
+        {
+            Reference.updatePlayerData(p.getUniqueId().toString());
+            Reference.updatePlayerChannel(p, 0);
+
+            if (p.isOp()) {
+                FileConfiguration config = Reference.getDataConfig(p.getUniqueId().toString());
+                Reference.OpChatViewMod.put(p, config.getBoolean("viewMod"));
+            }
+        }
     }
 
     private void onCreateNewData(Player player, String uuid)
@@ -54,6 +72,7 @@ public class EventDataManager implements Listener
         config.set("village", "");
         config.set("createCount", 0);
         config.set("date", LocalDate.now().toString());
+        config.set("viewMod", false);
 
         Reference.saveDataFile(config, Reference.getDataFile(uuid));
     }

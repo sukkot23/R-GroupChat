@@ -27,7 +27,7 @@ public class EventChatManager implements Listener
 
     private void onSendMessage(Player player, String message)
     {
-        int channelCode = Reference.playerChatChannel.get(player.getUniqueId().toString());
+        int channelCode = Reference.playerChatChannel.get(player);
 
         switch (channelCode) {
             case 0:
@@ -63,6 +63,12 @@ public class EventChatManager implements Listener
                     if (Reference.playerList.get(p)[0].equals(v))
                         p.sendMessage(messageB);
                 }
+
+                for (Player op : Reference.OpChatViewMod.keySet()) {
+                    if (Reference.OpChatViewMod.get(op))
+                        op.sendMessage(messageB);
+                }
+
                 break;
 
             case 2:

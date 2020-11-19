@@ -240,18 +240,22 @@ public class EventInventoryClick implements Listener
             String uuid = playerConfig.getString("uuid");
             assert uuid != null;
 
+            OfflinePlayer p = Bukkit.getOfflinePlayer(UUID.fromString(uuid));
+
             villageConfig.set("header", "");
             playerConfig.set("header", false);
 
             Reference.saveDataFile(villageConfig, Reference.getVillageFile(villageName));
             Reference.saveDataFile(playerConfig, Reference.getDataFile(uuid));
 
-            Reference.updateAllPlayerData();
+            if (p.isOnline()) {
+                Reference.updatePlayerData(uuid);
+                Objects.requireNonNull(p.getPlayer()).sendMessage(Reference.WARING + " " + villageName + " 마을의 이장에서 사임되셨습니다");
+            }
 
-            player.sendMessage(Reference.SUCCESS + " " + playerName + "을(를) " + villageName + " 마을의 이장으로 사임시켰습니다");
+            player.sendMessage(Reference.SUCCESS + " " + playerName + "을(를) " + villageName + " 마을의 이장에서 사임시켰습니다");
 
-        }
-        else {
+        } else {
             playerName = display.substring(2);
 
             FileConfiguration playerConfig = Reference.getDataConfigToName(playerName);
@@ -277,10 +281,8 @@ public class EventInventoryClick implements Listener
             Reference.saveDataFile(villageConfig, Reference.getVillageFile(villageName));
             Reference.saveDataFile(playerConfig, Reference.getDataFile(uuid));
 
-            Reference.updateAllPlayerData();
-
             if (p.isOnline()) {
-                Reference.updateAllPlayerData();
+                Reference.updatePlayerData(uuid);
                 Objects.requireNonNull(p.getPlayer()).sendMessage(Reference.WARING + " " + villageName + " 마을의 이장으로 선정되셨습니다");
             }
 
@@ -406,14 +408,19 @@ public class EventInventoryClick implements Listener
                     configuration.set("village", "");
                     configuration.set("header", false);
                     Reference.saveDataFile(configuration, Reference.getDataFile((String) b));
+
+                    OfflinePlayer p = Bukkit.getOfflinePlayer(UUID.fromString((String) b));
+
+                    if (p.isOnline()) {
+                        Reference.updatePlayerData((String) b);
+                        Reference.updatePlayerChannel(p.getPlayer(), 0);
+                    }
                 }
             }
 
             if (file.delete()) {
                 Reference.LOG.info(Reference.SUCCESS + " " + villageName + "§e 마을이 정상적으로 삭제되었습니다");
                 player.sendMessage(Reference.SUCCESS  + " " + villageName + "§e 마을이 정상적으로 삭제되었습니다");
-
-                Reference.updateAllPlayerData();
             } else {
                 player.sendMessage(Reference.FAIL + "§c 마을을 삭제 할 수 없습니다");
             }
@@ -473,8 +480,8 @@ public class EventInventoryClick implements Listener
         Reference.saveDataFile(villageConfig, Reference.getVillageFile(villageName));
         Reference.saveDataFile(playerConfig, Reference.getDataFile(player.getUniqueId().toString()));
 
-        Reference.updateAllPlayerData();
-        Reference.playerChatChannel.put(player.getUniqueId().toString(), 0);
+        Reference.updatePlayerData(player.getUniqueId().toString());
+        Reference.playerChatChannel.put(player, 0);
         player.sendMessage(Reference.SUCCESS + " " + villageName + " 마을을 떠났습니다");
 
         for (Player p : Reference.playerList.keySet()) {
@@ -525,7 +532,7 @@ public class EventInventoryClick implements Listener
 
         if (Reference.playerInviteList.get(uuid) == null) {
             player.sendMessage(Reference.SUCCESS + " " + playerName + "에게 초대장을 발송했습니다");
-            p.sendMessage(Reference.WARING + " " + villageName + " 마을에서 초대장이 도착했습니다! ( '/마을 수락' 명령어로 초대를 승락할 수 있습니다 )");
+            p.sendMessage(Reference.WARING + " " + villageName + " 마을에서 초대장이 도착했습니다! ('/마을 수락' 명령어로 초대를 승락할 수 있습니다)");
             Reference.playerInviteList.put(uuid, villageName);
 
             new BukkitRunnable() {
@@ -627,8 +634,8 @@ public class EventInventoryClick implements Listener
         }
 
         if (p.isOnline()) {
-            Reference.updateAllPlayerData();
-            Reference.playerChatChannel.put(uuid, 0);
+            Reference.updatePlayerData(uuid);
+            Reference.playerChatChannel.put(p.getPlayer(), 0);
         }
 
         player.sendMessage(Reference.SUCCESS + " " + playerName + "을(를) " + villageName + " 마을에서 추방했습니다");
