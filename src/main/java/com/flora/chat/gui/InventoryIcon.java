@@ -1,5 +1,6 @@
 package com.flora.chat.gui;
 
+import com.flora.chat.Main;
 import com.flora.chat.Reference;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -8,6 +9,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,6 +77,8 @@ public class InventoryIcon
 
         ItemStack item = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta meta = (SkullMeta) item.getItemMeta();
+//        ItemStack item = new ItemStack(Material.BOOK);
+//        ItemMeta meta = item.getItemMeta();
 
         assert meta != null;
         meta.setOwningPlayer(player);
@@ -101,6 +106,7 @@ public class InventoryIcon
         assert meta != null;
 
         meta.setDisplayName(" ");
+        meta.setCustomModelData(1);
 
         item.setItemMeta(meta);
 

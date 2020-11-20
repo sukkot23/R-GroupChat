@@ -1,5 +1,6 @@
 package com.flora.chat.gui;
 
+import com.flora.chat.Main;
 import com.flora.chat.Reference;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -8,6 +9,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,15 +52,22 @@ public class InventoryVillagerGui
         if (lengthFile % max == 0)
             maxPage--;
 
-        for (int i = 0; i < max; i++) {
-            int number = i + (page * max);
+        new BukkitRunnable() {
+            @Override
+            public void run()
+            {
+                for (int i = 0; i < max; i++) {
+                    int number = i + (page * max);
 
-            if (lengthFile > number) {
-                inv.setItem(i + 9, InventoryIcon.iconVillager((String) member.get(number)));
-            } else {
-                inv.setItem(i + 9, new ItemStack(Material.AIR));
+                    if (lengthFile > number) {
+                        inv.setItem(i + 9, InventoryIcon.iconVillager((String) member.get(number)));
+                    } else {
+                        inv.setItem(i + 9, new ItemStack(Material.AIR));
+                    }
+                }
             }
-        }
+        }.runTaskAsynchronously(JavaPlugin.getPlugin(Main.class));
+
 
         inv.setItem(49, InventoryIcon.iconCenter(page));
 

@@ -3,7 +3,7 @@ plugins {
     id 'kr.entree.spigradle' version '2.2.3'
 }
 
-def plVersion = '1.4.0'
+def plVersion = '1.4.1'
 
 group 'com.flora.chat'
 version plVersion

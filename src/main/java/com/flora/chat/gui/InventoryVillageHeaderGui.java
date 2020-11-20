@@ -1,5 +1,6 @@
 package com.flora.chat.gui;
 
+import com.flora.chat.Main;
 import com.flora.chat.Reference;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -7,6 +8,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +19,7 @@ public class InventoryVillageHeaderGui
     String name, display, color, header, date;
     ItemStack icon;
     List<?> member;
-    int page = 0;
+    int page;
 
     public InventoryVillageHeaderGui(String villageName, int page)
     {
@@ -46,15 +49,21 @@ public class InventoryVillageHeaderGui
         if (lengthFile % max == 0)
             maxPage--;
 
-        for (int i = 0; i < max; i++) {
-            int number = i + (page * max);
+        new BukkitRunnable() {
+            @Override
+            public void run()
+            {
+                for (int i = 0; i < max; i++) {
+                    int number = i + (page * max);
 
-            if (lengthFile > number) {
-                inv.setItem(i + 9, InventoryIcon.iconVillager((String) member.get(number)));
-            } else {
-                inv.setItem(i + 9, new ItemStack(Material.AIR));
+                    if (lengthFile > number) {
+                        inv.setItem(i + 9, InventoryIcon.iconVillager((String) member.get(number)));
+                    } else {
+                        inv.setItem(i + 9, new ItemStack(Material.AIR));
+                    }
+                }
             }
-        }
+        }.runTaskAsynchronously(JavaPlugin.getPlugin(Main.class));
 
         inv.setItem(45, iconSign());
         inv.setItem(46, iconInvite());

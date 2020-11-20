@@ -53,7 +53,7 @@ public class EventChatManager implements Listener
                 String v = (String) Reference.playerList.get(player)[0];
                 String color =  Reference.villageChatColor.get(v);
 
-                String messageB = color + "<마을채팅> §r" + player.getDisplayName() + " : " + color + message.replaceAll("&", "§");
+                String messageB = color + "<마을채팅> §r" + player.getDisplayName() + " : " + color + message;
 
 
                 LOG("<" + player.getName() + "> " + message, v);
@@ -66,7 +66,7 @@ public class EventChatManager implements Listener
 
                 for (Player op : Reference.OpChatViewMod.keySet()) {
                     if (Reference.OpChatViewMod.get(op))
-                        op.sendMessage(messageB);
+                        op.sendMessage(color + "<" + v + " 마을> §r" + player.getDisplayName() + " : " + color + message);
                 }
 
                 break;
