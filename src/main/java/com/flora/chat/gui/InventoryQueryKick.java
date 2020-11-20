@@ -1,10 +1,13 @@
 package com.flora.chat.gui;
 
+import com.flora.chat.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class InventoryQueryKick
 {
@@ -21,7 +24,12 @@ public class InventoryQueryKick
     {
         Inventory inv = Bukkit.getServer().createInventory(null, 27, "§8ㆍ " + villageName + "§8 마을에서 추방합니까? ");
 
-        inv.setItem(4, iconTarget(playerName));
+        new BukkitRunnable() {
+            @Override
+            public void run()
+            { inv.setItem(4, iconTarget(playerName)); }
+        }.runTaskAsynchronously(JavaPlugin.getPlugin(Main.class));
+
 
         inv.setItem(11, InventoryIcon.iconRemove(false));
 
