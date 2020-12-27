@@ -26,8 +26,11 @@ public class EventDataManager implements Listener
         Reference.updatePlayerData(player);
         Reference.updatePlayerChannel(player, 0);
 
+        FileConfiguration config = Reference.getDataConfig(uuid);
+        config.set("name", player.getName());
+        Reference.saveDataFile(config, Reference.getDataFile(uuid));
+
         if (player.isOp()) {
-            FileConfiguration config = Reference.getDataConfig(uuid);
             Reference.OpChatViewMod.put(player, config.getBoolean("viewMod"));
         }
     }

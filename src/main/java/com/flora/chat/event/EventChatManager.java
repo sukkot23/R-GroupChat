@@ -34,19 +34,30 @@ public class EventChatManager implements Listener
                 Object[] o = Reference.playerList.get(player);
                 String village = (String) o[0];
 
-                if (village.isEmpty())
+                if (village.isEmpty()) {
                     village = Reference.defaultVillage;
+                }
+                else {
+                    String vColor = Reference.villageChatColor.get(village);
+                    village = vColor + village;
+                }
 
                 assert village != null;
-                String type = Reference.defaultChatType.replaceAll("%p%", player.getDisplayName()).replaceAll("%v%", village).replaceAll("&", "§");
+                String type = Reference.defaultChatType
+                                .replaceAll("%v%", village)
+                                .replaceAll("%p%", player.getDisplayName())
+                                .replaceAll("&", "§");
 
                 String messageA = type + " §r" + message;
 
                 Reference.LOG.info("<" + player.getName() + "> " + message);
-                DiscordSRV.getPlugin().getMainTextChannel().sendMessage(player.getName() + " >> " + message).queue();
+
+                try { DiscordSRV.getPlugin().getMainTextChannel().sendMessage(player.getName() + " >> " + message).queue(); }
+                catch (NullPointerException exception) { System.out.println("'DiscordSRV' 에 문제가 발견되었습니다"); }
 
                 for (Player p : Bukkit.getOnlinePlayers())
                     p.sendMessage(messageA);
+
                 break;
 
             case 1:
