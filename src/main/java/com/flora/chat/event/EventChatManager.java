@@ -52,6 +52,7 @@ public class EventChatManager implements Listener
 
                 Reference.LOG.info("<" + player.getName() + "> " + message);
 
+                /* Discord SRV Connect */
                 try { DiscordSRV.getPlugin().getMainTextChannel().sendMessage(player.getName() + " >> " + message).queue(); }
                 catch (NullPointerException exception) { System.out.println("'DiscordSRV' 에 문제가 발견되었습니다"); }
 

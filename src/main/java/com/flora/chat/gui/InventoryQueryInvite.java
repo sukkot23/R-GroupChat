@@ -40,7 +40,7 @@ public class InventoryQueryInvite
             int number = i + (page * max);
 
             if (lengthFile > number)
-                inv.setItem(i, iconPlayerHead(onlinePlayer.get(i)));
+                inv.setItem(i, iconPlayerHead(onlinePlayer.get(number)));
             else
                 inv.setItem(i, new ItemStack(Material.AIR));
         }
