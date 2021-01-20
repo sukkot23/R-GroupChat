@@ -3,7 +3,7 @@ plugins {
     id 'kr.entree.spigradle' version '2.2.3'
 }
 
-def plVersion = '1.4.5'
+def plVersion = '1.4.7'
 
 group 'com.flora.chat'
 version plVersion
@@ -21,7 +21,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly spigot('1.16.4')
+    compileOnly spigot('1.16.5')
 
     compileOnly 'com.discordsrv:discordsrv:1.20.0'
     compile 'net.dv8tion:JDA:4.2.0_204'

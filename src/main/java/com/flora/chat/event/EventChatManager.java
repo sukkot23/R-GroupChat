@@ -20,11 +20,80 @@ public class EventChatManager implements Listener
     @EventHandler
     private void onChatEvent(AsyncPlayerChatEvent event)
     {
-        event.setCancelled(true);
+        Player player = event.getPlayer();
+        String message = event.getMessage();
 
-        onSendMessage(event.getPlayer(), event.getMessage());
+        int channelCode = Reference.playerChatChannel.get(player);
+
+        switch (channelCode) {
+            case 0:
+                Object[] o = Reference.playerList.get(player);
+                String village = (String) o[0];
+
+                if (village.isEmpty()) {
+                    village = Reference.defaultVillage;
+                }
+                else {
+                    String vColor = Reference.villageChatColor.get(village);
+                    village = vColor + village;
+                }
+
+                assert village != null;
+                String type = Reference.defaultChatType
+                        .replaceAll("%v%", village)
+                        .replaceAll("%p%", player.getDisplayName())
+                        .replaceAll("&", "§");
+
+                String messageA = type + " §r" + message;
+
+                Reference.LOG.info("<" + player.getName() + "> " + message);
+
+                /* Discord SRV Connect */
+                try { DiscordSRV.getPlugin().getMainTextChannel().sendMessage(player.getName() + " >> " + message).queue(); }
+                catch (NullPointerException exception) { System.out.println("'DiscordSRV' 에 문제가 발견되었습니다"); }
+
+                event.setFormat(type + " §r%2$s");
+                break;
+
+            case 1:
+                event.setCancelled(true);
+
+                String v = (String) Reference.playerList.get(player)[0];
+                String color =  Reference.villageChatColor.get(v);
+
+                String messageB = color + "<마을채팅> §r" + player.getDisplayName() + " : " + color + message;
+
+
+                LOG("<" + player.getName() + "> " + message, v);
+                Reference.LOG.info("[VillageChat] <" + player.getName() + "> " + message);
+
+                for (Player p : Reference.playerList.keySet()) {
+                    if (Reference.playerList.get(p)[0].equals(v))
+                        p.sendMessage(messageB);
+                }
+
+                for (Player op : Reference.OpChatViewMod.keySet()) {
+                    if (Reference.OpChatViewMod.get(op))
+                        op.sendMessage(color + "<" + v + " 마을> §r" + player.getDisplayName() + " : " + color + message);
+                }
+
+                break;
+
+            case 2:
+                event.setCancelled(true);
+
+                String messageC = "§d<GM> §r" + player.getDisplayName() + " : §d" + message.replaceAll("&", "§");
+
+                Reference.LOG.info("[GM] <" + player.getName() + "> " + message);
+
+                for (Player p : Bukkit.getOnlinePlayers())
+                    if (p.isOp())
+                        p.sendMessage(messageC);
+                break;
+        }
     }
 
+    @Deprecated
     private void onSendMessage(Player player, String message)
     {
         int channelCode = Reference.playerChatChannel.get(player);
@@ -56,8 +125,11 @@ public class EventChatManager implements Listener
                 try { DiscordSRV.getPlugin().getMainTextChannel().sendMessage(player.getName() + " >> " + message).queue(); }
                 catch (NullPointerException exception) { System.out.println("'DiscordSRV' 에 문제가 발견되었습니다"); }
 
-                for (Player p : Bukkit.getOnlinePlayers())
-                    p.sendMessage(messageA);
+
+
+
+//                for (Player p : Bukkit.getOnlinePlayers())
+//                    p.sendMessage(messageA);
 
                 break;
 
